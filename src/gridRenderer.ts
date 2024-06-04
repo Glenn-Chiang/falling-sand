@@ -1,6 +1,7 @@
 import { Container, Graphics } from "pixi.js";
 import { getElementGraphicsContext } from "./cellGraphics";
 import { Element, getSelectedElement } from "./elements";
+import { CellPosition, updateCellData } from "./gridData";
 
 export function createGrid(gridData: Element[][], gridContainer: Container) {
   const numRows = gridData.length;
@@ -27,11 +28,6 @@ export function createGrid(gridData: Element[][], gridContainer: Container) {
   return gridDisplay;
 }
 
-interface CellPosition {
-  row: number;
-  col: number;
-}
-
 function createCell(
   gridData: Element[][],
   cellPosition: CellPosition,
@@ -42,23 +38,11 @@ function createCell(
   cell.eventMode = "static";
 
   cell.on("pointerdown", () => {
-    console.log("hello");
     const selectedElement = getSelectedElement();
     updateCellData(gridData, cellPosition, selectedElement);
   });
 
   return cell;
-}
-
-// Update the element at the specified cell position on the grid
-function updateCellData(
-  gridData: Element[][],
-  cellPosition: CellPosition,
-  element: Element
-) {
-  const newGridData = gridData.map((row) => row.slice()); // Deep copy grid data
-  gridData[cellPosition.row][cellPosition.col] = element;
-  return newGridData;
 }
 
 // Reads from gridData and updates the display accordingly
