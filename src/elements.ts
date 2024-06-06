@@ -1,5 +1,11 @@
-export type Element = "empty" | "sand" | "water";
+export type ElementType = "empty" | "sand" | "water";
 
-export function getSelectedElement(): Element {
+export interface Element {
+  update: (grid: ElementType[][]) => void
+}
+
+
+
+export function getSelectedElement(): ElementType {
   return "sand";
 }
