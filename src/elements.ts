@@ -1,9 +1,18 @@
 import { CellPosition } from "./gridData";
 
+export const elements: ElementType[] = ["empty", "sand", "water", "stone"]
+
 export type ElementType = "empty" | "sand" | "water" | "stone";
 
-export function getSelectedElement(): ElementType {
-  return "stone";
+let activeElement: ElementType = "sand"
+
+export function getActiveElement(): ElementType {
+  return activeElement;
+}
+
+export function setActiveElement(element: ElementType): void {
+  activeElement = element
+  console.log(activeElement)
 }
 
 export function updateStone(_: ElementType[][], nextGrid: ElementType[][], cellPosition: CellPosition) {
@@ -105,28 +114,19 @@ export function updateWater(
     return
   }
 
-  if (grid[row][col - 1] === "empty" && grid[row][col + 1] !== "empty") {
+  if (grid[row][col - 1] === "empty" ) {
     nextGrid[row][col] = "empty"
     nextGrid[row][col - 1] = "water"
     return
   }
 
-  // if (grid[row][col + 1] === "empty" && grid[row][col - 1] !== "empty") {
-  //   nextGrid[row][col] = "empty"
-  //   nextGrid[row][col + 1] = "water"
-  //   return
-  // }
+  if (grid[row][col + 1] === "empty") {
+    nextGrid[row][col] = "empty"
+    nextGrid[row][col + 1] = "water"
+    return
+  }
 
-  // if (grid[row][col - 1] === "empty" && grid[row][col + 1] === "empty") {
-  //   nextGrid[row][col] = "empty"
-  //   if (Math.random() < 0.5) {
-  //     nextGrid[row][col - 1] = "water"
-  //   } else {
-  //     nextGrid[row][col + 1] = "water"
-  //   }
-  //   return
-  // }
-
+  
   // If there is no empty space to move to, don't move
   nextGrid[row][col] = "water"
 }

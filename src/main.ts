@@ -3,6 +3,7 @@ import { createGrid, updateGridDisplay } from "./gridRenderer";
 import { gridHeight, gridWidth, numCols, numRows } from "./gridSettings";
 import { ElementType } from "./elements";
 import { initializeGridData, updateGrid } from "./gridData";
+import { buttonPanel } from "./buttons";
 
 const app = new Application();
 await app.init({ resizeTo: window, background: "white" });
@@ -21,6 +22,9 @@ const gridContainer = new Container({ x: 2, y: 2 });
 gridFrame.addChild(gridContainer);
 
 const gridDisplay = createGrid(gridData, gridContainer);
+
+app.stage.addChild(buttonPanel)
+buttonPanel.position = {x: 0, y: gridFrame.height + 10}
 
 app.ticker.add(() => {
   updateGridDisplay(gridData, gridDisplay);

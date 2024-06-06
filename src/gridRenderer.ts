@@ -1,6 +1,6 @@
 import { Container, Graphics } from "pixi.js";
 import { getElementGraphicsContext } from "./cellGraphics";
-import { ElementType, getSelectedElement } from "./elements";
+import { ElementType, getActiveElement } from "./elements";
 import { CellPosition, updateCellData } from "./gridData";
 
 export function createGrid(gridData: ElementType[][], gridContainer: Container) {
@@ -37,10 +37,15 @@ function createCell(
   const cell = new Graphics(graphicsContext);
   cell.eventMode = "static";
 
-  cell.on("pointermove", () => {
-    const selectedElement = getSelectedElement();
-    updateCellData(gridData, cellPosition, selectedElement);
+  cell.on("pointermove", (event) => {
+    if (event.pressure > 0) {
+      updateCellData(gridData, cellPosition, getActiveElement());
+    }
   });
+
+  cell.on("pointerdown", () => {
+    updateCellData(gridData, cellPosition, getActiveElement());
+  })
 
   return cell;
 }

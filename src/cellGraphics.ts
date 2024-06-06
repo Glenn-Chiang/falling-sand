@@ -1,26 +1,14 @@
 import { GraphicsContext } from "pixi.js";
 import { cellHeight, cellWidth } from "./gridSettings";
-import { ElementType } from "./elements";
+import { ElementType, elements } from "./elements";
+import { elementColors } from "./elementColors";
 
-const emptyCellContext = new GraphicsContext()
-  .rect(0, 0, cellWidth, cellHeight)
-  .fill("black");
-const sandCellContext = new GraphicsContext()
-  .rect(0, 0, cellWidth, cellHeight)
-  .fill("F7DC6F");
-const waterCellContext = new GraphicsContext()
-  .rect(0, 0, cellWidth, cellHeight)
-  .fill("85C1E9");
-const stoneCellContext = new GraphicsContext()
-  .rect(0, 0, cellWidth, cellHeight)
-  .fill("#99A3A4");
+const elementGraphics: Map<ElementType, GraphicsContext> = new Map();
 
-const elementGraphics = new Map<ElementType, GraphicsContext>([
-  ["empty", emptyCellContext],
-  ["sand", sandCellContext],
-  ["water", waterCellContext],
-  ["stone", stoneCellContext],
-]);
+for (let element of elements) {
+  const graphicsContext = new GraphicsContext().rect(0, 0, cellWidth, cellHeight).fill(elementColors.get(element))
+  elementGraphics.set(element, graphicsContext)
+}
 
 export function getElementGraphicsContext(element: ElementType) {
   return elementGraphics.get(element);
