@@ -37,7 +37,7 @@ function createCell(
   const cell = new Graphics(graphicsContext);
   cell.eventMode = "static";
 
-  cell.on("pointerdown", () => {
+  cell.on("pointermove", () => {
     const selectedElement = getSelectedElement();
     updateCellData(gridData, cellPosition, selectedElement);
   });
