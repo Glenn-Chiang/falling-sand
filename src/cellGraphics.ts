@@ -7,10 +7,10 @@ const emptyCellContext = new GraphicsContext()
   .fill("black")
 const sandCellContext = new GraphicsContext()
   .rect(0, 0, cellWidth, cellHeight)
-  .fill("white");
+  .fill("F7DC6F");
 const waterCellContext = new GraphicsContext()
   .rect(0, 0, cellWidth, cellHeight)
-  .fill("blue");
+  .fill("85C1E9");
 
 const elementGraphics = new Map<ElementType, GraphicsContext>([
   ["empty", emptyCellContext],

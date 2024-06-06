@@ -1,5 +1,5 @@
-export const gridWidth = 800
-export const gridHeight = 800
+export const gridWidth = 600
+export const gridHeight = 600
 export const numRows = 40;
 export const numCols = 40;
 export const cellWidth = gridWidth / numCols
