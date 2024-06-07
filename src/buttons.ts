@@ -16,7 +16,6 @@ elements.forEach((element, index) => {
   button.eventMode = "static"
   
   button.on("click", () => {
-    console.log("hello")
     setActiveElement(element)
   })
   

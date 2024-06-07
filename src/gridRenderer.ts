@@ -1,20 +1,17 @@
 import { Container, Graphics } from "pixi.js";
 import { getElementGraphicsContext } from "./cellGraphics";
 import { ElementType, getActiveElement } from "./elements";
-import { CellPosition, updateCellData } from "./gridData";
+import { CellPosition, Grid } from "./gridData";
 
-export function createGrid(gridData: ElementType[][], gridContainer: Container) {
-  const numRows = gridData.length;
-  const numCols = gridData[0].length;
-
+export function createGrid(grid: Grid, gridContainer: Container) {
   const gridDisplay = [];
 
-  for (let row = 0; row < numRows; row++) {
+  for (let row = 0; row < grid.numRows; row++) {
     const rowOfCells = [];
 
-    for (let col = 0; col < numCols; col++) {
-      const element = gridData[row][col];
-      const cell = createCell(gridData, { row, col }, element);
+    for (let col = 0; col < grid.numCols; col++) {
+      const element = grid.getCellElement({row, col})
+      const cell = createCell(grid, { row, col }, element);
       gridContainer.addChild(cell);
       cell.x = col * cell.width;
       cell.y = row * cell.height;
@@ -29,7 +26,7 @@ export function createGrid(gridData: ElementType[][], gridContainer: Container) 
 }
 
 function createCell(
-  gridData: ElementType[][],
+  grid: Grid,
   cellPosition: CellPosition,
   element: ElementType
 ) {
@@ -37,14 +34,18 @@ function createCell(
   const cell = new Graphics(graphicsContext);
   cell.eventMode = "static";
 
+  const onInteract = () => {
+    grid.setCellElement(cellPosition, getActiveElement())
+  }
+
   cell.on("pointermove", (event) => {
-    if (event.pressure > 0) {
-      updateCellData(gridData, cellPosition, getActiveElement());
+    if (event.pressure > 0) { // Check if user is holding down the mouse
+      onInteract()
     }
   });
 
   cell.on("pointerdown", () => {
-    updateCellData(gridData, cellPosition, getActiveElement());
+    onInteract()
   })
 
   return cell;
@@ -53,15 +54,12 @@ function createCell(
 // Reads from gridData and updates the display accordingly
 // This function does not update the grid data
 export function updateGridDisplay(
-  gridData: ElementType[][],
+  grid: Grid,
   gridDisplay: Graphics[][]
 ) {
-  const numRows = gridData.length;
-  const numCols = gridData[0].length;
-
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      const element = gridData[row][col];
+  for (let row = 0; row < grid.numRows; row++) {
+    for (let col = 0; col < grid.numCols; col++) {
+      const element = grid.getCellElement({row, col});
       const cell = gridDisplay[row][col];
       updateCellDisplay(cell, element);
     }

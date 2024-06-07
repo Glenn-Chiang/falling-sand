@@ -1,15 +1,14 @@
 import { Application, Container, Graphics } from "pixi.js";
 import { createGrid, updateGridDisplay } from "./gridRenderer";
 import { gridHeight, gridWidth, numCols, numRows } from "./gridSettings";
-import { ElementType } from "./elements";
-import { initializeGridData, updateGrid } from "./gridData";
+import { Grid } from "./gridData";
 import { buttonPanel } from "./buttons";
 
 const app = new Application();
 await app.init({ resizeTo: window, background: "white" });
 document.body.appendChild(app.canvas);
 
-const gridData: ElementType[][] = initializeGridData(numRows, numCols);
+const gridData = new Grid(numRows, numCols);
 
 const gridFrame = new Graphics()
   .rect(2, 2, gridWidth, gridHeight)
@@ -28,5 +27,6 @@ buttonPanel.position = {x: 0, y: gridFrame.height + 10}
 
 app.ticker.add(() => {
   updateGridDisplay(gridData, gridDisplay);
-  updateGrid(gridData);
+  gridData.update()
 });
+
