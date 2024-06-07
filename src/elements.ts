@@ -5,16 +5,8 @@ export const elements = ["empty", "sand", "water", "stone"] as const;
 type Elements = typeof elements;
 export type ElementType = Elements[number];
 
-interface Element {
-  type: ElementType;
-  update: () => void;
-}
-
-export function updateStone(
-  grid: Grid,
-  cellPosition: CellPosition
-) {
-  grid.placeElement({row: cellPosition.row, col: cellPosition.col}, "stone")
+export function updateStone(grid: Grid, cellPosition: CellPosition) {
+  grid.placeElement({ row: cellPosition.row, col: cellPosition.col }, "stone");
 }
 
 export function updateSand(grid: Grid, cellPosition: CellPosition) {
@@ -33,16 +25,19 @@ export function updateSand(grid: Grid, cellPosition: CellPosition) {
   }
 
   // Move diagonally downward if possible
-  // If left-down is empty and right-down is occupied, move left-down
+
+  // If left and left-down are empty and right-down is occupied, move left-down
   if (
+    grid.getElementAt(row, col - 1) === "empty" &&
     grid.getElementAt(row + 1, col - 1) === "empty" &&
     grid.getElementAt(row + 1, col + 1) !== "empty"
   ) {
     grid.moveElement({ row, col }, { row: row + 1, col: col - 1 });
     return;
   }
-  // If right-down is empty and left-down is occupied, move right-down
+  // If right and right-down are empty and left-down is occupied, move right-down
   if (
+    grid.getElementAt(row, col + 1) === "empty" &&
     grid.getElementAt(row + 1, col - 1) !== "empty" &&
     grid.getElementAt(row + 1, col + 1) === "empty"
   ) {
@@ -89,25 +84,6 @@ export function updateWater(
   }
 
   // If left is empty and right is occupied, move left
-  if (grid[row][col - 1] === "empty" && grid[row][col + 1] !== "empty") {
-    nextGrid[row][col] = "empty";
-    nextGrid[row][col - 1] = "water";
-    return;
-  }
-
-  // If right is empty and left is occupied, move right
-  if (grid[row][col + 1] === "empty" && grid[row][col - 1] !== "empty") {
-    nextGrid[row][col] = "empty";
-    nextGrid[row][col + 1] = "water";
-    return;
-  }
-
-  // If both left and right are empty, randomly decide whether to move left or right
-  if (grid[row][col - 1] === "empty" && grid[row][col + 1] === "empty") {
-    nextGrid[row][col] = "empty";
-    nextGrid[row][col - 1] = "water";
-    return;
-  }
 
   // Move diagonally downward if possible
   // If left-down is empty and right-down is occupied, move left-down
@@ -140,6 +116,33 @@ export function updateWater(
       nextGrid[row + 1][col + 1] = "water";
     }
     return;
+  }
+
+  // If below is water, water will move left or right on water
+  if (grid[row + 1][col] === "water") {
+    if (grid[row][col - 1] === "empty" && grid[row][col + 1] !== "empty") {
+      nextGrid[row][col] = "empty";
+      nextGrid[row][col - 1] = "water";
+      return;
+    }
+  
+    // If right is empty and left is occupied, move right
+    if (grid[row][col + 1] === "empty" && grid[row][col - 1] !== "empty") {
+      nextGrid[row][col] = "empty";
+      nextGrid[row][col + 1] = "water";
+      return;
+    }
+  
+    // If both left and right are empty, randomly decide whether to move left or right
+    // if (grid[row][col - 1] === "empty" && grid[row][col + 1] === "empty") {
+    //   nextGrid[row][col] = "empty";
+    //   if (Math.random() < 0.5) {
+    //     nextGrid[row][col - 1] = "water";
+    //   } else {
+    //     nextGrid[row][col + 1] = "water";
+    //   }
+    //   return;
+    // }
   }
 
   // If there is no empty space to move to, don't move

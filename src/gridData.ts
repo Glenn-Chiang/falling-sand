@@ -41,10 +41,10 @@ export class Grid {
     this.grid[cellPosition.row][cellPosition.col] = element;
   }
 
+  // Move the element at the initialPosition to nextPosition
   moveElement(initialPosition: CellPosition, nextPosition: CellPosition) {
-    const element = this.grid[initialPosition.row][initialPosition.col]
+    this.nextGrid[nextPosition.row][nextPosition.col] = this.grid[initialPosition.row][initialPosition.col]
     this.nextGrid[initialPosition.row][initialPosition.col] = "empty"
-    this.nextGrid[nextPosition.row][nextPosition.col] = element
   }
 
   placeElement(position: CellPosition, element: ElementType) {
