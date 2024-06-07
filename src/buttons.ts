@@ -1,6 +1,7 @@
 import { Container, Graphics } from "pixi.js";
-import { elements, setActiveElement } from "./elements";
+import { elements } from "./elements";
 import { elementColors } from "./elementColors";
+import { setActiveElement } from "./elementSelection";
 
 export const buttonPanel = new Container()
 

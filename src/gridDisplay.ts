@@ -1,7 +1,8 @@
 import { Container, Graphics } from "pixi.js";
 import { getElementGraphicsContext } from "./cellGraphics";
-import { ElementType, getActiveElement } from "./elements";
+import { ElementType } from "./elements";
 import { CellPosition, Grid } from "./gridData";
+import { getActiveElement } from "./elementSelection";
 
 export function createGrid(grid: Grid, gridContainer: Container) {
   const gridDisplay = [];
@@ -10,7 +11,7 @@ export function createGrid(grid: Grid, gridContainer: Container) {
     const rowOfCells = [];
 
     for (let col = 0; col < grid.numCols; col++) {
-      const element = grid.getCellElement({row, col})
+      const element = grid.getElementAt(row, col);
       const cell = createCell(grid, { row, col }, element);
       gridContainer.addChild(cell);
       cell.x = col * cell.width;
@@ -35,31 +36,29 @@ function createCell(
   cell.eventMode = "static";
 
   const onInteract = () => {
-    grid.setCellElement(cellPosition, getActiveElement())
-  }
+    grid.setCellElement(cellPosition, getActiveElement());
+  };
 
   cell.on("pointermove", (event) => {
-    if (event.pressure > 0) { // Check if user is holding down the mouse
-      onInteract()
+    if (event.pressure > 0) {
+      // Check if user is holding down the mouse
+      onInteract();
     }
   });
 
   cell.on("pointerdown", () => {
-    onInteract()
-  })
+    onInteract();
+  });
 
   return cell;
 }
 
 // Reads from gridData and updates the display accordingly
 // This function does not update the grid data
-export function updateGridDisplay(
-  grid: Grid,
-  gridDisplay: Graphics[][]
-) {
+export function updateGridDisplay(grid: Grid, gridDisplay: Graphics[][]) {
   for (let row = 0; row < grid.numRows; row++) {
     for (let col = 0; col < grid.numCols; col++) {
-      const element = grid.getCellElement({row, col});
+      const element = grid.getElementAt(row, col);
       const cell = gridDisplay[row][col];
       updateCellDisplay(cell, element);
     }

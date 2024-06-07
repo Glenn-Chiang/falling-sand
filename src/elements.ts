@@ -1,86 +1,70 @@
-import { CellPosition } from "./gridData";
+import { CellPosition, Grid } from "./gridData";
 
 export const elements = ["empty", "sand", "water", "stone"] as const;
 
 type Elements = typeof elements;
 export type ElementType = Elements[number];
 
-let activeElement: ElementType = "sand";
-
-export function getActiveElement(): ElementType {
-  return activeElement;
-}
-
-export function setActiveElement(element: ElementType): void {
-  activeElement = element;
-  console.log(activeElement);
+interface Element {
+  type: ElementType;
+  update: () => void;
 }
 
 export function updateStone(
-  _: ElementType[][],
-  nextGrid: ElementType[][],
+  grid: Grid,
   cellPosition: CellPosition
 ) {
-  const { row, col } = cellPosition;
-  nextGrid[row][col] = "stone";
+  grid.placeElement({row: cellPosition.row, col: cellPosition.col}, "stone")
 }
 
-export function updateSand(
-  grid: ElementType[][],
-  nextGrid: ElementType[][],
-  cellPosition: CellPosition
-) {
+export function updateSand(grid: Grid, cellPosition: CellPosition) {
   const { row, col } = cellPosition;
-  const numRows = grid.length;
 
   // If reached bottom, don't move
-  if (row == numRows - 1) {
-    nextGrid[row][col] = "sand";
+  if (row == grid.numRows - 1) {
+    grid.placeElement({ row, col }, "sand");
     return;
   }
 
   // Move straight downward if space is empty
-  if (grid[row + 1][col] === "empty") {
-    nextGrid[row][col] = "empty";
-    nextGrid[row + 1][col] = "sand";
+  if (grid.getElementAt(row + 1, col) === "empty") {
+    grid.moveElement({ row, col }, { row: row + 1, col });
     return;
   }
 
   // Move diagonally downward if possible
   // If left-down is empty and right-down is occupied, move left-down
   if (
-    grid[row + 1][col - 1] === "empty" &&
-    grid[row + 1][col + 1] !== "empty"
+    grid.getElementAt(row + 1, col - 1) === "empty" &&
+    grid.getElementAt(row + 1, col + 1) !== "empty"
   ) {
-    nextGrid[row][col] = "empty";
-    nextGrid[row + 1][col - 1] = "sand";
+    grid.moveElement({ row, col }, { row: row + 1, col: col - 1 });
     return;
   }
   // If right-down is empty and left-down is occupied, move right-down
   if (
-    grid[row + 1][col - 1] !== "empty" &&
-    grid[row + 1][col + 1] === "empty"
+    grid.getElementAt(row + 1, col - 1) !== "empty" &&
+    grid.getElementAt(row + 1, col + 1) === "empty"
   ) {
-    nextGrid[row][col] = "empty";
-    nextGrid[row + 1][col + 1] = "sand";
+    grid.moveElement({ row, col }, { row: row + 1, col: col + 1 });
     return;
   }
+
   // If both left-down and right-down are empty, randomly decide whether to move left-down or right-down
   if (
-    grid[row + 1][col - 1] === "empty" &&
-    grid[row + 1][col + 1] === "empty"
+    grid.getElementAt(row + 1, col - 1) === "empty" &&
+    grid.getElementAt(row + 1, col + 1) === "empty"
   ) {
-    nextGrid[row][col] = "empty";
     if (Math.random() < 0.5) {
-      nextGrid[row + 1][col - 1] = "sand";
+      grid.moveElement({ row, col }, { row: row + 1, col: col - 1 });
     } else {
-      nextGrid[row + 1][col + 1] = "sand";
+      grid.moveElement({ row, col }, { row: row + 1, col: col + 1 });
     }
     return;
   }
 
   // If there is no empty space to move to, don't move
-  nextGrid[row][col] = "sand";
+  grid.placeElement({ row, col }, "sand");
 }
 
 export function updateWater(
@@ -120,9 +104,9 @@ export function updateWater(
 
   // If both left and right are empty, randomly decide whether to move left or right
   if (grid[row][col - 1] === "empty" && grid[row][col + 1] === "empty") {
-    nextGrid[row][col] = "empty"
-    nextGrid[row][col - 1] = "water"
-    return
+    nextGrid[row][col] = "empty";
+    nextGrid[row][col - 1] = "water";
+    return;
   }
 
   // Move diagonally downward if possible

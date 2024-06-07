@@ -1,5 +1,5 @@
 import { Application, Container, Graphics } from "pixi.js";
-import { createGrid, updateGridDisplay } from "./gridRenderer";
+import { createGrid, updateGridDisplay } from "./gridDisplay";
 import { gridHeight, gridWidth, numCols, numRows } from "./gridSettings";
 import { Grid } from "./gridData";
 import { buttonPanel } from "./buttons";
