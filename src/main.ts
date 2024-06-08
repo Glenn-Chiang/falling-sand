@@ -1,8 +1,8 @@
 import { Application, Container, Graphics, Text, TextStyle } from "pixi.js";
-import { createGridDisplay, updateGridDisplay } from "./gridDisplay";
-import { gridHeight, gridWidth, numCols, numRows } from "./gridSettings";
-import { Grid, grid } from "./gridData";
 import { buttonPanel } from "./buttons";
+import { grid } from "./gridData";
+import { createGridDisplay, updateGridDisplay } from "./gridDisplay";
+import { gridHeight, gridWidth } from "./gridSettings";
 
 (async () => {
   const app = new Application();
