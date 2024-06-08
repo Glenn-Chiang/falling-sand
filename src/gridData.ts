@@ -7,48 +7,73 @@ export interface CellPosition {
 
 export class Grid {
   private grid: ElementType[][]; // The grid on the current frame
-  private nextGrid: ElementType[][]; // The grid on the next frame
+  private visited: boolean[][]; // Keeps track of which cells on the grid have already been visited in the current update loop
 
   get numRows(): number {
-    return this.grid.length
+    return this.grid.length;
   }
 
   get numCols(): number {
-    return this.grid[0].length
+    return this.grid[0].length;
   }
 
   constructor(numRows: number, numCols: number) {
-    this.grid = Grid.createGrid(numRows, numCols)
-    this.nextGrid = Grid.createGrid(numRows, numCols)
+    this.grid = Grid.createMatrix(numRows, numCols, "empty");
+    this.visited = Grid.createMatrix(numRows, numCols, false);
   }
 
-  static createGrid(numRows: number, numCols: number): ElementType[][] {
+  static createMatrix<T>(
+    numRows: number,
+    numCols: number,
+    defaultValue: T
+  ): T[][] {
     return Array.from({ length: numRows }, () =>
-      Array.from({ length: numCols }, () => "empty")
+      Array.from({ length: numCols }, () => defaultValue)
     );
   }
 
-  private resetNextGrid() {
-    this.nextGrid = Grid.createGrid(this.numRows, this.numCols)
+  // Fully reset the grid
+  reset() {
+    for (let i = 0; i < this.numRows; i++) {
+      for (let j = 0; j < this.numCols; j++) {
+        this.grid[i][j] = "empty";
+        this.visited[i][j] = false;
+      }
+    }
   }
 
-  getElementAt(row: number, col: number) : ElementType {
-    return this.grid[row][col]
+  private resetVisited() {
+    for (let i = 0; i < this.numRows; i++) {
+      for (let j = 0; j < this.numCols; j++) {
+        this.visited[i][j] = false;
+      }
+    }
+  }
+
+  elementAt(row: number, col: number): ElementType {
+    return this.grid[row][col];
   }
 
   // Update the element at the specified cell position on the grid
-  setCellElement(cellPosition: CellPosition, element: ElementType): void {
-    this.grid[cellPosition.row][cellPosition.col] = element;
+  placeElement(row: number, col: number, element: ElementType): void {
+    this.grid[row][col] = element;
+    this.visit(row, col);
   }
 
   // Move the element at the initialPosition to nextPosition
   moveElement(initialPosition: CellPosition, nextPosition: CellPosition) {
-    this.nextGrid[nextPosition.row][nextPosition.col] = this.grid[initialPosition.row][initialPosition.col]
-    this.nextGrid[initialPosition.row][initialPosition.col] = "empty"
+    this.grid[nextPosition.row][nextPosition.col] =
+      this.grid[initialPosition.row][initialPosition.col];
+    this.grid[initialPosition.row][initialPosition.col] = "empty";
+    this.visit(nextPosition.row, nextPosition.col);
   }
 
-  placeElement(position: CellPosition, element: ElementType) {
-    this.nextGrid[position.row][position.col] = element
+  private visit(row: number, col: number): void {
+    this.visited[row][col] = true;
+  }
+
+  isCellEmpty(row: number, col: number): boolean {
+    return this.grid[row][col] === "empty";
   }
 
   // Determine the state of each cell on the next frame
@@ -56,22 +81,28 @@ export class Grid {
   update() {
     for (let row = 0; row < this.numRows; row++) {
       for (let col = 0; col < this.numCols; col++) {
-        const element = this.grid[row][col]; // The element occupying the current cell on the last frame
+        // Skip over cells that have already been visited
+        if (this.visited[row][col]) {
+          continue;
+        }
+
+        const element = this.grid[row][col];
         switch (element) {
           case "sand":
             updateSand(this, { row, col });
             break;
           case "water":
-            updateWater(this.grid, this.nextGrid, { row, col });
+            updateWater(this, { row, col });
             break;
           case "stone":
-            updateStone(this, {row, col});
+            updateStone(this, { row, col });
             break;
         }
+
+        this.visit(row, col);
       }
     }
 
-    this.grid = this.nextGrid
-    this.resetNextGrid()
+    this.resetVisited();
   }
 }

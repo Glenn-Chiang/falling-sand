@@ -11,7 +11,7 @@ export function createGrid(grid: Grid, gridContainer: Container) {
     const rowOfCells = [];
 
     for (let col = 0; col < grid.numCols; col++) {
-      const element = grid.getElementAt(row, col);
+      const element = grid.elementAt(row, col);
       const cell = createCell(grid, { row, col }, element);
       gridContainer.addChild(cell);
       cell.x = col * cell.width;
@@ -36,7 +36,7 @@ function createCell(
   cell.eventMode = "static";
 
   const onInteract = () => {
-    grid.setCellElement(cellPosition, getActiveElement());
+    grid.placeElement(cellPosition.row, cellPosition.col, getActiveElement());
   };
 
   cell.on("pointermove", (event) => {
@@ -58,7 +58,7 @@ function createCell(
 export function updateGridDisplay(grid: Grid, gridDisplay: Graphics[][]) {
   for (let row = 0; row < grid.numRows; row++) {
     for (let col = 0; col < grid.numCols; col++) {
-      const element = grid.getElementAt(row, col);
+      const element = grid.elementAt(row, col);
       const cell = gridDisplay[row][col];
       updateCellDisplay(cell, element);
     }
