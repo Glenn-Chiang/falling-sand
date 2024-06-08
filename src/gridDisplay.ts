@@ -36,7 +36,7 @@ function createCell(
   cell.eventMode = "static";
 
   const onInteract = () => {
-    grid.placeElement(cellPosition.row, cellPosition.col, getActiveElement());
+    grid.placeElement(cellPosition, getActiveElement());
   };
 
   cell.on("pointermove", (event) => {

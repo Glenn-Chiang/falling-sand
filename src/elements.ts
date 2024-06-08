@@ -18,13 +18,16 @@ export function updateSand(grid: Grid, cellPosition: CellPosition) {
     return;
   }
 
-  // Move straight downward if space is empty
-  if (grid.elementAt(row + 1, col) === "empty") {
+  // If below is empty, move down
+  if (grid.isCellEmpty(row + 1, col)) {
     grid.moveElement({ row, col }, { row: row + 1, col });
     return;
   }
 
-  // Move diagonally downward if possible
+  // If below is water, swap places with water to 'sink'
+  if (grid.elementAt(row + 1, col) === "water") {
+    grid.swapElements({row, col}, {row: row + 1, col})
+  }
 
   // If left and left-down are empty and right-down is occupied, move left-down
   if (

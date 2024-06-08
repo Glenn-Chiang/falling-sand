@@ -55,21 +55,31 @@ export class Grid {
   }
 
   // Update the element at the specified cell position on the grid
-  placeElement(row: number, col: number, element: ElementType): void {
-    this.grid[row][col] = element;
-    this.visit(row, col);
+  placeElement(position: CellPosition, element: ElementType): void {
+    this.grid[position.row][position.col] = element;
+    this.visit(position);
   }
 
   // Move the element at the initialPosition to nextPosition
   moveElement(initialPosition: CellPosition, nextPosition: CellPosition) {
-    this.grid[nextPosition.row][nextPosition.col] =
-      this.grid[initialPosition.row][initialPosition.col];
-    this.grid[initialPosition.row][initialPosition.col] = "empty";
-    this.visit(nextPosition.row, nextPosition.col);
+    this.placeElement(
+      nextPosition,
+      this.elementAt(initialPosition.row, initialPosition.col)
+    );
+    this.placeElement(initialPosition, "empty");
+    this.visit(nextPosition);
   }
 
-  private visit(row: number, col: number): void {
-    this.visited[row][col] = true;
+  swapElements(positionA: CellPosition, positionB: CellPosition) {
+    const temp = this.elementAt(positionA.row, positionA.col);
+    this.placeElement(positionA, this.elementAt(positionB.row, positionB.col));
+    this.placeElement(positionB, temp);
+    this.visit(positionA)
+    this.visit(positionB)
+  }
+
+  private visit(position: CellPosition): void {
+    this.visited[position.row][position.col] = true;
   }
 
   isCellEmpty(row: number, col: number): boolean {
@@ -87,19 +97,21 @@ export class Grid {
         }
 
         const element = this.grid[row][col];
+        const position = {row, col}
+
         switch (element) {
           case "sand":
-            updateSand(this, { row, col });
+            updateSand(this, position);
             break;
           case "water":
-            updateWater(this, { row, col });
+            updateWater(this, position);
             break;
           case "stone":
-            updateStone(this, { row, col });
+            updateStone(this, position);
             break;
         }
 
-        this.visit(row, col);
+        this.visit(position);
       }
     }
 
