@@ -9,5 +9,4 @@ export function getActiveElement(): ElementType {
 
 export function setActiveElement(element: ElementType): void {
   activeElement = element;
-  console.log(activeElement);
 }

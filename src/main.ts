@@ -1,32 +1,34 @@
-import { Application, Container, Graphics } from "pixi.js";
-import { createGrid, updateGridDisplay } from "./gridDisplay";
+import { Application, Container, Graphics, Text } from "pixi.js";
+import { createGridDisplay, updateGridDisplay } from "./gridDisplay";
 import { gridHeight, gridWidth, numCols, numRows } from "./gridSettings";
 import { Grid } from "./gridData";
 import { buttonPanel } from "./buttons";
 
-const app = new Application();
-await app.init({ resizeTo: window, background: "white" });
-document.body.appendChild(app.canvas);
+(async () => {
+  const app = new Application();
+  await app.init({ resizeTo: window, background: "white" });
+  document.body.appendChild(app.canvas);
 
-const gridData = new Grid(numRows, numCols);
+  const titleText = new Text({ text: "Sandbox" });
+  app.stage.addChild(titleText);
+  
+  const gridContainer = new Container({ x: 2, y: 40 });
+  app.stage.addChild(gridContainer)
 
-const gridFrame = new Graphics()
-  .rect(2, 2, gridWidth, gridHeight)
-  .fill("black")
-  .stroke({ color: "red", width: 4 });
+  const gridFrame = new Graphics()
+    .rect(0, 0, gridWidth, gridHeight)
+    .fill("black")
+    .stroke({ color: "red", width: 4 });
+  gridContainer.addChild(gridFrame)
 
-app.stage.addChild(gridFrame);
+  const gridData = new Grid(numRows, numCols);
+  const gridDisplay = createGridDisplay(gridData, gridContainer);
 
-const gridContainer = new Container({ x: 2, y: 2 });
-gridFrame.addChild(gridContainer);
+  app.stage.addChild(buttonPanel);
+  buttonPanel.position = { x: 0, y: titleText.height + gridFrame.height + 20 };
 
-const gridDisplay = createGrid(gridData, gridContainer);
-
-app.stage.addChild(buttonPanel)
-buttonPanel.position = {x: 0, y: gridFrame.height + 10}
-
-app.ticker.add(() => {
-  updateGridDisplay(gridData, gridDisplay);
-  gridData.update()
-});
-
+  app.ticker.add(() => {
+    updateGridDisplay(gridData, gridDisplay);
+    gridData.update();
+  });
+})();

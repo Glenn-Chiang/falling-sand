@@ -4,7 +4,7 @@ import { ElementType } from "./elements";
 import { CellPosition, Grid } from "./gridData";
 import { getActiveElement } from "./elementSelection";
 
-export function createGrid(grid: Grid, gridContainer: Container) {
+export function createGridDisplay(grid: Grid, gridContainer: Container) {
   const gridDisplay = [];
 
   for (let row = 0; row < grid.numRows; row++) {
