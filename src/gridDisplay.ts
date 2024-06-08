@@ -60,15 +60,10 @@ export function updateGridDisplay(grid: Grid, gridDisplay: Graphics[][]) {
     for (let col = 0; col < grid.numCols; col++) {
       const element = grid.elementAt(row, col);
       const cell = gridDisplay[row][col];
-      updateCellDisplay(cell, element);
+      const graphicsContext = getElementGraphicsContext(element);
+      if (graphicsContext) {
+        cell.context = graphicsContext;
+      }
     }
-  }
-}
-
-// Update the displayed cell graphics based on current cell data
-function updateCellDisplay(cell: Graphics, element: ElementType) {
-  const graphicsContext = getElementGraphicsContext(element);
-  if (graphicsContext) {
-    cell.context = graphicsContext;
   }
 }

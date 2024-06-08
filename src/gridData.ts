@@ -1,4 +1,5 @@
 import { ElementType, updateSand, updateStone, updateWater } from "./elements";
+import { numCols, numRows } from "./gridSettings";
 
 export interface CellPosition {
   row: number;
@@ -118,3 +119,5 @@ export class Grid {
     this.resetVisited();
   }
 }
+
+export const grid = new Grid(numRows, numCols)
