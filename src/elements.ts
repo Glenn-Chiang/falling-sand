@@ -1,5 +1,4 @@
 import { CellPosition, Grid } from "./gridData";
-import { gridHeight } from "./gridSettings";
 
 export const elements = ["empty", "sand", "water", "stone"] as const;
 
@@ -74,18 +73,20 @@ export function updateWater(grid: Grid, cellPosition: CellPosition) {
     return;
   }
 
-  // If left-down is empty and right-down is occupied, move left-down
+  // If left and left-down are empty and right-down is occupied, move left-down
   if (
+    grid.isCellEmpty(row, col - 1) &&
     grid.isCellEmpty(row + 1, col - 1) &&
     !grid.isCellEmpty(row + 1, col + 1)
   ) {
     grid.moveElement({ row, col }, { row: row + 1, col: col - 1 });
     return;
   }
-  // If right-down is empty and left-down is occupied, move right-down
+  // If right and right-down are empty and left-down is occupied, move right-down
   if (
-    !grid.isCellEmpty(row + 1, col - 1) &&
-    grid.isCellEmpty(row + 1, col + 1)
+    grid.isCellEmpty(row, col + 1) &&
+    grid.isCellEmpty(row + 1, col + 1) &&
+    !grid.isCellEmpty(row + 1, col - 1)
   ) {
     grid.moveElement({ row, col }, { row: row + 1, col: col + 1 });
     return;
