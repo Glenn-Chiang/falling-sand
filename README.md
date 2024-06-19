@@ -2,6 +2,8 @@
 A simple falling sand simulation implemented in Typescript with [pixijs](https://github.com/pixijs/pixijs).  
 The simulation features a 2D sandbox world in which users can freely place different kinds of elements such as sand, water and stone and watch how they interact with one another.
 
+This is a prototype for my more sophisticated simulation project https://github.com/Glenn-Chiang/sandbox
+
 ## Concept
 The fundamental idea behind the falling sand algorithm is based on the principles of [cellular automata](https://en.wikipedia.org/wiki/Cellular_automaton). A cellular automaton typically consists of a matrix of discrete cells each containing a particular state that evolves over time. In each cycle of iteration, each cell updates its state according to a predefined set of rules which determine the next state of the cell based on its current state and the states of its neighbours.
 
